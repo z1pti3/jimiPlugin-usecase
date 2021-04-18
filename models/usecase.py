@@ -1,6 +1,7 @@
 import jimi
 
 class _usecase(jimi.db._document):
+    name = str()
     description = str()
     usecaseType = str()
     usecaseSubType = str()
