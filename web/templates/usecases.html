@@ -1,0 +1,176 @@
+{% extends "main.html" %}
+
+{% block head %}
+    {{ jimi.jquery() }}
+{% endblock %}
+
+{% block main %}
+    <div class="container px-4 py-5 text-center" id="custom-cards">
+        <div class="text-start" >
+            <input type="text" class="form-control textbox w-50" id="search" onkeyup="doSearch()" placeholder="Search for use-cases">
+            <a href="#" class="bi-plus-square" style="font-size: 25px; display: inline-block; vertical-align: middle;" title="Create new use-case" data-bs-toggle="modal" data-bs-target="#newUsecaseModal"></a>
+        </div>
+        <ul class="list-group list-group-flush mt-3">
+            {% for usecase in usecases|sort(attribute='name') %}
+                <li class="list-group-item text-start searchContainer" data-name="{{ usecase["name"] }}" style="background-color: var(--mainBackgroundColor); border-color: var(--panelComponentBorder); color: var(--textColor);"">
+                    <div class="d-flex" style="justify-content: space-between;">
+                        <div>
+                            <a href="{{ usecase["_id"] }}/">
+                                <i class="bi-journals" style="font-size: 1.25rem; padding-right: 15px;"></i><span class="fs-4 mb-2">{{ usecase["name"] }}</span>
+                            </a>
+                        </div>
+                        <div>
+                            <a href="#" class="pe-3 bi-pencil" title="Edit" data-bs-toggle="modal" data-bs-target="#editUsecaseModal{{ usecase["_id"] }}"></a>
+                        </div>
+                    </div>
+                    <p class="mb-3 noHover">{{ usecase["description"] }}</p>
+                    <small>
+                        <i class="bi-calendar" style="font-size: 1rem; padding-right: 15px;"></i><span class="lastUpdate">{{ usecase["lastUpdateTime"] }}</span>
+                    </small>
+                </li>
+
+                <div class="modal fade" id="editUsecaseModal{{ usecase["_id"] }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content panel">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Editing {{ usecase["name"] }}</h5>
+                                <button type="button" class="close button" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-floating">
+                                    <input type="usecaseName" class="form-control textbox" id="usecaseName{{ usecase["_id"] }}" placeholder="Name" value="{{ usecase["name"] }}">
+                                    <label for="usecaseName">Name</label>
+                                </div>
+                                <br>
+                                <div class="form-floating">
+                                    <textarea type="usecaseDescription" class="form-control textbox" id="usecaseDescription{{ usecase["_id"] }}" placeholder="Description" style="height: 250px;">{{ usecase["description"] }}</textarea>
+                                    <label for="usecaseDescription">Description</label>
+                                </div>
+                                <br>
+                                <div class="form-floating">
+                                    <input type="usecaseType" class="form-control textbox" id="usecaseType{{ usecase["_id"] }}" placeholder="Type" value="{{ usecase["type"] }}">
+                                    <label for="usecaseType">Type</label>
+                                </div>
+                                <br>
+                                <div class="form-floating">
+                                    <input type="usecaseSubType" class="form-control textbox" id="usecaseSubType{{ usecase["_id"] }}" placeholder="SubType" value="{{ usecase["subType"] }}">
+                                    <label for="usecaseSubType">Sub-Type</label>
+                                </div>
+                                <br>
+                                <div class="form-floating">
+                                    <input type="usecaseDataSources" class="form-control textbox" id="usecaseDataSources{{ usecase["_id"] }}" placeholder="DataSources" value="{{ usecase["dataSources"] }}">
+                                    <label for="usecaseDataSources">Data Sources</label>
+                                </div>
+                                <br>
+                                <div class="form-floating">
+                                    <input type="usecaseDetectionStages" class="form-control textbox" id="usecaseDetectionStages{{ usecase["_id"] }}" placeholder="DetectionStages" value="{{ usecase["detectionStages"] }}">
+                                    <label for="usecaseDetectionStages">Detection Stages</label>
+                                </div>
+                                <br>
+                                <div class="form-floating">
+                                    <input type="usecaseMitreTactics" class="form-control textbox" id="usecaseMitreTactics{{ usecase["_id"] }}" placeholder="MitreTactics" value="{{ usecase["mitreTactics"] }}">
+                                    <label for="usecaseMitreTactics">Mitre Tactics</label>
+                                </div>
+                                <br>
+                                <div class="form-floating">
+                                    <input type="usecasePassTestEvents" class="form-control textbox" id="usecasePassTestEvents{{ usecase["_id"] }}" placeholder="PassTestEvents" value="{{ usecase["passTestEvents"] }}">
+                                    <label for="usecasePassTestEvents">Pass Test Events</label>
+                                </div>
+                                <br>
+                                <div class="form-floating">
+                                    <input type="usecaseFailedTestEvents" class="form-control textbox" id="usecaseFailedTestEvents{{ usecase["_id"] }}" placeholder="FailedTestEvents" value="{{ usecase["failedTestEvents"] }}">
+                                    <label for="usecaseFailedTestEvents">Failed Test Events</label>
+                                </div>
+                                <br>
+                                <div class="form-floating">
+                                    <input type="usecaseTriggers" class="form-control textbox" id="usecaseTriggers{{ usecase["_id"] }}" placeholder="Triggers" value="{{ usecase["triggers"] }}">
+                                    <label for="usecaseTriggers">Triggers</label>
+                                </div>
+                            </div>
+                            <div class="modal-footer justify-content-start">
+                                <button type="button" class="btn btn-primary button bi-save" onclick="editUsecase('{{ usecase["_id"] }}')"> Save</button>
+                                <button type="button" class="btn btn-primary button bi-trash" onclick="deleteUsecase('{{ usecase["_id"] }}')"> Delete</button>
+                                <button type="button" class="btn btn-primary button" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {% endfor %}
+        </ul>
+    </div>
+    <!-- Popup Conduct Creator Panel -->
+    <div class="modal fade" id="newUsecaseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content panel">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Create new use-case</h5>
+                    <button type="button" class="close button" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating">
+                        <input type="usecaseName" class="form-control textbox" id="usecaseName" placeholder="Name">
+                        <label for="usecaseName">Name</label>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-start">
+                    <button type="button" class="btn btn-primary button bi-save" onclick="createUsecase()"> Create</button>
+                    <button type="button" class="btn btn-primary button" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+        <script>
+            function createUsecase() {
+                var body = JSON.stringify({ CSRF : CSRF, name: $("#usecaseName").val() })
+                $.ajax({ url: "/api/1.0/models/usecase/", type : "PUT",  data:body, contentType:"application/json", success: function ( result ) {
+                        $.ajax({ url: "/api/1.0/models/usecase/"+result["_id"]+"/", type : "POST", data:body, contentType:"application/json", success: function ( result ) {
+                                window.location.reload();
+                            }
+                        });
+                    }
+                });
+            }
+        </script>
+    </div>
+    <!-- Global Scripts -->
+    <script>
+        function doSearch() {
+            var input = document.getElementById("search");
+            var searchFilter = input.value.toUpperCase();
+            var regex = new RegExp('\\b\\w*' + searchFilter + '\\w*\\b');
+            $('.searchContainer').hide().filter(function () {
+                var nr = regex.test($(this).data('name').toUpperCase());
+                if (nr) {
+                    return true;
+                }
+                return false;
+            }).show();
+        }
+        $(document).ready(function() {
+            doSearch();
+            $('.lastUpdate').each(function(i, obj) {
+                $(obj).text(localTime($(obj).text()))
+            });
+        });
+        function editUsecase(usecaseId) {
+            var body = JSON.stringify({ CSRF : CSRF, name: $("#usecaseName"+usecaseId).val(), description: $("#usecaseDescription"+usecaseId).val(), type: $("#usecaseType"+usecaseId).val(), subType: $("#usecaseSubType"+usecaseId).val(), dataSources: $("#usecaseDataSources"+usecaseId).val(), detectionStages: $("#usecaseDetectionStages"+usecaseId).val(), mitreTactics: $("#usecaseMitreTactics"+usecaseId).val(), passTestEvents: $("#usecasePassTestEvents"+usecaseId).val(), failedTestEvents: $("#usecaseFailedTestEvents"+usecaseId).val(), triggers: $("#usecaseTriggers"+usecaseId).val() })
+            $.ajax({ url: "/api/1.0/models/usecase/"+usecaseId+"/", type : "POST", data:body, contentType:"application/json", success: function ( result ) {
+                    window.location.reload();
+                }
+            });
+        }
+        function deleteUsecase(usecaseId) {
+            if (confirm("Are you sure you want to delete this use-case?")) {
+                var body = JSON.stringify({ CSRF : CSRF })
+                $.ajax({ url: "/api/1.0/models/usecase/"+usecaseId+"/", type : "DELETE", data:body, contentType:"application/json", success: function ( result ) {
+                        window.location.reload();
+                    }
+                });
+            }
+        }
+    </script>
+{% endblock %}

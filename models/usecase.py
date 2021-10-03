@@ -5,12 +5,13 @@ class _usecase(jimi.db._document):
     description = str()
     usecaseType = str()
     usecaseSubType = str()
-    dataSources = str()
+    dataSources = list()
     detectionLogic = str()
-    detectionStage = str()
+    detectionStages = list()
     mitreTactics = list()
-    tests = list()
-    flows = list()
+    passTestEvents = list()
+    failedTestEvents = list()
+    triggers = list()
 
     _dbCollection = jimi.db.db["usecase"]
  
